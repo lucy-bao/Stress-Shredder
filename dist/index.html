@@ -8,6 +8,7 @@
 <style>
 :root{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC","Microsoft Yahei",system-ui,sans-serif;color:#3c342d;background:#f4eee4;font-synthesis:none}
 *{box-sizing:border-box}body{margin:0}button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:3px solid #d99b64;outline-offset:2px}.app{max-width:1040px;padding:30px 24px 24px;margin:auto}.head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:22px}.eyebrow{font-size:11px;letter-spacing:.2em;color:#aa8870;font-weight:700}.head h1{font-size:clamp(28px,4vw,44px);margin:5px 0 8px;letter-spacing:-.04em}.head p{font-size:13px;color:#87776c;line-height:1.6;margin:0}.seal{width:58px;height:58px;background:#d77863;color:white;display:grid;place-items:center;border-radius:50%;font-size:23px;font-weight:bold;transform:rotate(11deg);flex-shrink:0;box-shadow:0 6px 15px #a75f4c28}.tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:13px}.edit{display:flex;align-items:center;gap:9px;border:1px solid #e4d9cb;border-radius:12px;background:#fffaf2;padding:0 14px;flex:1;min-width:190px;height:43px}.edit span{color:#b4a092;font-size:14px;flex-shrink:0}.edit input{background:none;border:0;outline:0;width:100%;min-width:0;color:#55443a;font-size:13px}.btn{height:43px;border:1px solid #e4d9cb;border-radius:11px;padding:0 15px;background:#fffaf2;color:#5f5248;font-size:13px;font-weight:650;white-space:nowrap;transition:transform .15s,background .15s}.btn:active{transform:scale(.97)}.btn.primary{background:#b7634d;border-color:#b7634d;color:white}.btn[aria-pressed="false"]{color:#aa9d90}.desk{height:min(62vh,555px);min-height:355px;border-radius:18px;position:relative;overflow:hidden;background:radial-gradient(ellipse at 45% 35%,#e9dbc6 0%,#e4d4be 55%,#d9c5ac 100%);box-shadow:inset 0 0 0 1px #d4c3b0,0 15px 32px #77664f15}.desk:after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.22;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' seed='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E")}.desk canvas{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair;position:relative;z-index:1}.corner{position:absolute;z-index:2;pointer-events:none;top:17px;left:18px;color:#89735f;font-size:11px;font-weight:700;letter-spacing:.04em;background:#f8f1e3c9;border:1px solid #fff9;border-radius:7px;padding:7px 10px}.instructions{position:absolute;z-index:2;pointer-events:none;bottom:17px;left:0;right:0;text-align:center;font-size:12px;color:#7b6857;background:#f9f1e3b5;padding:7px 12px;border-radius:100px;width:max-content;max-width:95%;margin:auto;transition:opacity .2s}.stats{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:20px;margin-top:15px}.progress-block{min-width:0}.metric{display:flex;justify-content:space-between;align-items:center;color:#7b685a;font-size:12px;margin-bottom:8px}.metric strong{color:#ad604c;font-size:13px}.track{height:7px;border-radius:12px;background:#e5d8c6;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#e5a27c,#b85c4b);border-radius:12px;transition:width .3s;width:0}.count{font-size:11px;color:#907d6e;text-align:center;white-space:nowrap}.count strong{display:block;font-size:20px;color:#4a3b31;font-variant-numeric:tabular-nums;margin-top:2px}.foot{display:flex;justify-content:space-between;gap:12px;align-items:center;color:#a08c7b;font-size:11px;line-height:1.6;margin-top:18px}.foot span:last-child{white-space:nowrap}.note{font-size:11px;color:#a38d7b;margin-top:8px}.photo-info{color:#8f7b6c;font-size:12px;margin:-4px 0 13px;padding-left:2px;min-height:18px}.photo-info strong{color:#b7644e;font-weight:650}.desk.dragging{outline:3px dashed #b7634d;outline-offset:-9px}.btn[hidden]{display:none}.confetti{font-size:17px} @media(max-width:600px){.app{padding:20px 12px 20px}.head{margin-bottom:14px}.seal{height:46px;width:46px;font-size:19px}.head p{font-size:12px}.tools{gap:7px}.edit{flex:1 1 100%;width:100%}.btn{flex:1;padding:0 6px}.desk{height:57vh;min-height:370px;border-radius:13px}.corner{left:9px;top:10px}.stats{gap:10px}.foot{align-items:start}.foot span:last-child{white-space:normal;text-align:right}}
+.head p strong{margin-left:.25em}.head-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}.lang-toggle{min-width:40px;height:34px;padding:0 10px;border:1px solid #dacbbb;border-radius:100px;background:#fffaf2;color:#876f5e;font-size:12px;font-weight:750;letter-spacing:.04em;-webkit-tap-highlight-color:transparent}.lang-toggle:active{background:#eee2d3}.lang-toggle:focus-visible{outline-offset:2px}
 .stats{display:flex;justify-content:flex-end;gap:24px}
 .photo-info:empty{display:none}
 @media(max-width:600px){
@@ -15,7 +16,7 @@
   .head{align-items:center;margin-bottom:20px}
   .head h1{font-size:34px;line-height:1.15;margin:0 0 6px}
   .head p{font-size:14px;line-height:1.5}
-  .seal{width:50px;height:50px;font-size:21px}
+  .seal{width:50px;height:50px;font-size:21px}.head-actions{gap:7px}.lang-toggle{min-width:38px;height:32px;padding:0 9px}
   .tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:12px}
   .edit{grid-column:1/-1;min-width:0;height:52px;padding:0 15px}
   .edit input{font-size:16px}
@@ -58,20 +59,20 @@
 </head>
 <body>
 <main class="app">
-  <header class="head"><div><h1>开撕</h1><p>写下你的不开心或者上传图片，尽情撕掉你的不开心。<strong>数据仅在本地处理</strong>。</p></div><div class="seal">撕</div></header>
-  <section class="tools" aria-label="工具栏">
+  <header class="head"><div><h1 id="headerTitle">开撕</h1><p><span id="subtitleText">写下你的不开心或者上传图片，尽情撕掉你的不开心。</span><strong id="localOnly">数据仅在本地处理。</strong></p></div><div class="head-actions"><button type="button" class="lang-toggle" id="languageToggle" aria-label="Switch to English" title="Switch to English">EN</button><div class="seal">撕</div></div></header>
+  <section class="tools" id="tools" aria-label="工具栏">
     <div class="edit"><span aria-hidden="true">✎</span><input id="thought" maxlength="100" value="把今天的不开心撕掉" aria-label="写在纸上的文字" placeholder="写下想撕掉的事……"><button type="button" class="tool-action clear-input" id="clearThought" aria-label="清空文字" title="清空文字" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="m9 9 6 6m0-6-6 6"/></svg></button></div>
     <div class="editor-actions">
-      <button class="tool-action" id="uploadPhoto" title="上传图片"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8" cy="9" r="1.5"/><path d="m4 17 5-5 4 4 3-3 5 5"/></svg><span>图片</span></button>
+      <button class="tool-action" id="uploadPhoto" title="上传图片"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8" cy="9" r="1.5"/><path d="m4 17 5-5 4 4 3-3 5 5"/></svg><span id="uploadLabel">图片</span></button>
       <input id="photoInput" type="file" accept="image/*" hidden aria-label="选择本地图片">
       <button class="tool-action" id="removePhoto" hidden aria-label="移除图片" title="移除图片">移除</button>
-      <button class="tool-action" id="newPaper" title="恢复完整纸张，保留当前内容"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10a8 8 0 1 1 1 8M4 4v6h6"/></svg><span>再来一次</span></button>
+      <button class="tool-action" id="newPaper" title="恢复完整纸张，保留当前内容"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10a8 8 0 1 1 1 8M4 4v6h6"/></svg><span id="resetLabel">再来一次</span></button>
       <button class="tool-action" id="audio" aria-label="音效" title="关闭音效" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m11 5-5 4H3v6h3l5 4z"/><path class="sound-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/><path class="sound-muted" d="m16 9 5 6m0-6-5 6"/></svg></button>
     </div>
   </section>
   <div class="photo-info" id="photoInfo" aria-live="polite"></div>
   <section class="desk" id="desk" aria-label="可交互撕纸画布"><canvas id="paperCanvas"></canvas><div class="celebration-message" id="celebrationMessage" role="status" aria-live="polite" hidden>恭喜消灭了所有不开心</div></section>
-  <section class="stats" aria-label="撕纸统计"><div class="count">纸片<strong id="pieceCount">1</strong></div><div class="count">撕裂<strong id="tearCount">0</strong></div></section>
+  <section class="stats" id="stats" aria-label="撕纸统计"><div class="count"><span id="piecesLabel">纸片</span><strong id="pieceCount">1</strong></div><div class="count"><span id="tearsLabel">撕裂</span><strong id="tearCount">0</strong></div></section>
 </main>
 <script>
 (()=>{
@@ -84,6 +85,33 @@ let uploadedImage=null,uploadedName="",uploadSequence=0;
 let paperTexture=null,textureVersion=0,textureDirty=true,needsRedraw=true;
 let tearBuffers=[],audioLimiter=null;
 let celebrated=false;
+let language='zh',preferredLanguage='zh',photoInfoKey='';
+try{const savedLanguage=localStorage.getItem('tear-paper-language');if(savedLanguage==='en')preferredLanguage='en'}catch(e){}
+const translations={
+ zh:{pageTitle:'开撕 · 尽情撕掉你的不开心',heading:'开撕',subtitle:'写下你的不开心或者上传图片，尽情撕掉你的不开心。',localOnly:'数据仅在本地处理。',toolsLabel:'工具栏',defaultThought:'把今天的不开心撕掉',thoughtLabel:'写在纸上的文字',thoughtPlaceholder:'写下想撕掉的事……',clearThought:'清空文字',upload:'图片',uploadTitle:'上传图片',photoInput:'选择本地图片',remove:'移除',removeTitle:'移除图片',reset:'再来一次',resetTitle:'恢复完整纸张，保留当前内容',sound:'音效',soundOnTitle:'关闭音效',soundOffTitle:'开启音效',deskLabel:'可交互撕纸画布',celebration:'恭喜消灭了所有不开心',statsLabel:'撕纸统计',pieces:'纸片',tears:'撕裂',paperTop:'想放下的事',paperPrompt:'鼠标或手指划过纸张，撕开它',switchLanguage:'Switch to English',switchLabel:'EN',invalidImage:'请上传 JPG、PNG、WebP 等普通图片。',tooLarge:'图片超过 25 MB，请换一张小一点的图片。',readFailed:'图片读取失败，请换一张试试。',unsupported:'图片太大或格式不支持，读取失败，请换一张图片。',openFailed:'图片无法打开，请换成 JPG、PNG 或 WebP 格式。'},
+ en:{pageTitle:'Tear It Up · Let go of what is bothering you',heading:'Tear It Up',subtitle:'Write down what is bothering you or upload an image, then tear it away.',localOnly:'Your data stays on this device.',toolsLabel:'Tools',defaultThought:"Tear away today's worries",thoughtLabel:'Text on the paper',thoughtPlaceholder:'Write down what you want to let go…',clearThought:'Clear text',upload:'Image',uploadTitle:'Upload image',photoInput:'Choose a local image',remove:'Remove',removeTitle:'Remove image',reset:'Start over',resetTitle:'Restore the paper and keep the current content',sound:'Sound',soundOnTitle:'Turn sound off',soundOffTitle:'Turn sound on',deskLabel:'Interactive tearing canvas',celebration:'You cleared away every worry!',statsLabel:'Tearing stats',pieces:'Pieces',tears:'Tears',paperTop:'THE THINGS I LET GO',paperPrompt:'Swipe across the paper to tear it',switchLanguage:'切换到中文',switchLabel:'中',invalidImage:'Please upload a JPG, PNG, WebP, or similar image.',tooLarge:'This image is over 25 MB. Please choose a smaller one.',readFailed:'The image could not be read. Please try another.',unsupported:'This image is too large or unsupported. Please try another.',openFailed:'Could not open the image. Please use JPG, PNG, or WebP.'}
+};
+const t=key=>translations[language][key];
+function applyLanguage(nextLanguage){
+ const input=$('thought'),oldDefault=translations[language].defaultThought,translateDefault=input.value===oldDefault;
+ language=translations[nextLanguage]?nextLanguage:'zh';
+ if(translateDefault)input.value=t('defaultThought');
+ document.documentElement.lang=language==='zh'?'zh-CN':'en';document.title=t('pageTitle');
+ $('headerTitle').textContent=t('heading');$('subtitleText').textContent=t('subtitle');$('localOnly').textContent=t('localOnly');
+ $('tools').setAttribute('aria-label',t('toolsLabel'));
+ input.setAttribute('aria-label',t('thoughtLabel'));input.placeholder=t('thoughtPlaceholder');
+ $('clearThought').setAttribute('aria-label',t('clearThought'));$('clearThought').title=t('clearThought');
+ $('uploadLabel').textContent=t('upload');$('uploadPhoto').title=t('uploadTitle');$('photoInput').setAttribute('aria-label',t('photoInput'));
+ $('removePhoto').textContent=t('remove');$('removePhoto').setAttribute('aria-label',t('removeTitle'));$('removePhoto').title=t('removeTitle');
+ $('resetLabel').textContent=t('reset');$('newPaper').title=t('resetTitle');
+ $('audio').setAttribute('aria-label',t('sound'));$('audio').title=soundEnabled?t('soundOnTitle'):t('soundOffTitle');
+ desk.setAttribute('aria-label',t('deskLabel'));$('celebrationMessage').textContent=t('celebration');
+ $('stats').setAttribute('aria-label',t('statsLabel'));$('piecesLabel').textContent=t('pieces');$('tearsLabel').textContent=t('tears');
+ const toggle=$('languageToggle');toggle.textContent=t('switchLabel');toggle.setAttribute('aria-label',t('switchLanguage'));toggle.title=t('switchLanguage');
+ $('clearThought').hidden=input.value.length===0;if(photoInfoKey)$('photoInfo').textContent=t(photoInfoKey);
+ if(scene){scene.text=input.value.trim()||t('defaultThought');textureDirty=true;needsRedraw=true}
+ try{localStorage.setItem('tear-paper-language',language)}catch(e){}
+}
 const rnd=(a,b)=>a+Math.random()*(b-a),clamp=(n,l,h)=>Math.min(h,Math.max(l,n)),dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const cross=(a,b,p)=>(b.x-a.x)*(p.y-a.y)-(b.y-a.y)*(p.x-a.x);
 const area=poly=>Math.abs(poly.reduce((s,p,i)=>{let q=poly[(i+1)%poly.length];return s+p.x*q.y-q.x*p.y},0))/2;
@@ -122,7 +150,7 @@ function paintPaper(ctx){
    ctx.strokeStyle='rgba(94,77,63,.09)';ctx.lineWidth=1;ctx.strokeRect(px+.5,py+.5,dw-1,dh-1);
  }else{
    ctx.strokeStyle='#998b7123';ctx.lineWidth=1;for(let yy=y+54;yy<y+h-18;yy+=27){ctx.beginPath();ctx.moveTo(x+21,yy);ctx.lineTo(x+w-19,yy);ctx.stroke()}
-   ctx.fillStyle='#b55f4d';ctx.fillRect(x+20,y+20,24,2);ctx.fillStyle='#8d7766';ctx.font='10px system-ui';ctx.textBaseline='middle';ctx.fillText('THE THINGS I LET GO',x+20,y+38);
+   ctx.fillStyle='#b55f4d';ctx.fillRect(x+20,y+20,24,2);ctx.fillStyle='#8d7766';ctx.font='10px system-ui';ctx.textBaseline='middle';ctx.fillText(t('paperTop'),x+20,y+38);
    ctx.fillStyle='#58463b';ctx.textAlign='center';
    let fontSize=Math.min(21,w/12),lines=[];
    while(true){
@@ -135,7 +163,7 @@ function paintPaper(ctx){
     fontSize=Math.max(9,fontSize-1);
    }
    lines.forEach((line,index)=>ctx.fillText(line,x+w/2,y+h*.43+(index-(lines.length-1)/2)*fontSize*1.45));
-   ctx.fillStyle='#b19e8d';ctx.font='12px system-ui';ctx.fillText('鼠标或手指划过纸张，撕开它',x+w/2,y+h*.72);
+   ctx.fillStyle='#b19e8d';ctx.font='12px system-ui';ctx.fillText(t('paperPrompt'),x+w/2,y+h*.72);
  }
 
 }
@@ -302,20 +330,20 @@ function reset(){
    w=Math.min(maxW,maxH*r);h=w/r;
  }
  const x=(W-w)/2,y=(H-h)/2;
- scene={x,y,w,h,color:['#f7edda','#f7e6e2','#f3ebd9','#edf1dc'][Math.floor(Math.random()*4)],text:$('thought').value.trim()||'把今天的不开心撕掉',image:uploadedImage};
+ scene={x,y,w,h,color:['#f7edda','#f7e6e2','#f3ebd9','#edf1dc'][Math.floor(Math.random()*4)],text:$('thought').value.trim()||t('defaultThought'),image:uploadedImage};
  const poly=[{x,y},{x:x+w,y},{x:x+w,y:y+h},{x,y:y+h}];pieces=[piece(poly)];
  updateStats();
 }
-function showImageInfo(message){$('photoInfo').textContent=message}
+function showImageInfo(key=''){photoInfoKey=key;$('photoInfo').textContent=key?t(key):''}
 function loadPhoto(file){
  if(!file)return;
- if(!file.type.startsWith('image/')||file.type==='image/svg+xml'){showImageInfo('请上传 JPG、PNG、WebP 等普通图片。');return}
- if(file.size>25*1024*1024){showImageInfo('图片超过 25 MB，请换一张小一点的图片。');return}
+ if(!file.type.startsWith('image/')||file.type==='image/svg+xml'){showImageInfo('invalidImage');return}
+ if(file.size>25*1024*1024){showImageInfo('tooLarge');return}
  const seq=++uploadSequence,url=URL.createObjectURL(file),img=new Image();
  showImageInfo('');
  img.onload=()=>{
    URL.revokeObjectURL(url);if(seq!==uploadSequence)return;
-   if(!img.naturalWidth||!img.naturalHeight){showImageInfo('图片读取失败，请换一张试试。');return}
+   if(!img.naturalWidth||!img.naturalHeight){showImageInfo('readFailed');return}
    try{
      // 大图预缩放，保证照片本地处理时不会把浏览器内存撑满。
      const maxSide=2000,k=Math.min(1,maxSide/Math.max(img.naturalWidth,img.naturalHeight));
@@ -325,9 +353,9 @@ function loadPhoto(file){
      $('removePhoto').hidden=false;
      showImageInfo('');
      reset();
-   }catch(err){showImageInfo('图片太大或格式不支持，读取失败，请换一张图片。')}
+   }catch(err){showImageInfo('unsupported')}
  };
- img.onerror=()=>{URL.revokeObjectURL(url);if(seq===uploadSequence)showImageInfo('图片无法打开，请换成 JPG、PNG 或 WebP 格式。')};
+ img.onerror=()=>{URL.revokeObjectURL(url);if(seq===uploadSequence)showImageInfo('openFailed')};
  img.src=url;
 }
 
@@ -377,12 +405,13 @@ function syncThought(){
  const value=$('thought').value;
  $('clearThought').hidden=value.length===0;
  if(!$('celebrationMessage').hidden&&value.trim()){reset();return}
- if(scene){scene.text=value.trim()||'把今天的不开心撕掉';textureDirty=true;needsRedraw=true}
+ if(scene){scene.text=value.trim()||t('defaultThought');textureDirty=true;needsRedraw=true}
 }
 $('thought').addEventListener('input',syncThought);
 $('clearThought').addEventListener('click',()=>{$('thought').value='';syncThought();$('thought').focus()});
-syncThought();
-$('thought').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();e.target.blur()}});$('audio').addEventListener('click',()=>{soundEnabled=!soundEnabled;if(soundEnabled)prepareAudio(true);else pendingTear=null;$('audio').title=soundEnabled?'关闭音效':'开启音效';$('audio').setAttribute('aria-pressed',String(soundEnabled))});
+$('languageToggle').addEventListener('click',()=>applyLanguage(language==='zh'?'en':'zh'));
+applyLanguage(preferredLanguage);
+$('thought').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();e.target.blur()}});$('audio').addEventListener('click',()=>{soundEnabled=!soundEnabled;if(soundEnabled)prepareAudio(true);else pendingTear=null;$('audio').title=soundEnabled?t('soundOnTitle'):t('soundOffTitle');$('audio').setAttribute('aria-pressed',String(soundEnabled))});
 document.addEventListener('keydown',event=>{
  if(event.code!=='KeyK'||!event.shiftKey||event.ctrlKey||event.altKey||event.metaKey||event.repeat)return;
  if(event.target instanceof Element&&event.target.closest('input,textarea,select,[contenteditable]'))return;
