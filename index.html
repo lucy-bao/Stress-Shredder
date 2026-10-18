@@ -84,7 +84,7 @@
 .mode-switch .mode-button[aria-pressed="true"]{background:#fffcf8;color:#6a493a;box-shadow:0 1px 4px #66503a18}
 .mode-switch .mode-button[aria-pressed="false"]:hover{background:#e8dfd2;color:#695749}
 @media(max-width:600px){.mode-switch{flex:0 0 auto}.mode-switch .mode-button{min-height:32px;height:32px;padding:0 11px;font-size:12px}}
-@media(max-width:600px){.editor-actions:has(#removePhoto:not([hidden])) #imageControls{flex-basis:calc(100% - 62px);flex-grow:1}#removePhoto{order:3;flex:0 0 54px;min-height:44px;align-self:flex-end;margin-top:10px;padding:0 4px}}
+@media(max-width:600px){#imageControls{flex-basis:100%;min-width:0;gap:10px;flex-wrap:nowrap}#uploadPhoto{padding:0 12px;gap:6px}.upload-help{flex:1;min-width:0;font-size:10px;gap:3px;white-space:nowrap}#removePhoto{flex:0 0 36px;width:36px;min-height:44px;padding:0;margin:0}#removePhoto svg{width:19px;height:19px}}
 </style>
 </head>
 <body>
@@ -99,11 +99,12 @@
       <div class="mode-divider" aria-hidden="true"></div>
       <div class="source-controls" id="imageControls" hidden>
         <button type="button" class="tool-action" id="uploadPhoto" title="上传图片"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V3m-5 5 5-5 5 5M4 14v6h16v-6"/></svg><span id="uploadLabel">上传图片</span></button>
-        <p class="upload-help"><span id="formatHelp">支持 JPG / PNG / WEBP</span><span id="privacyHelp">图片仅在本地处理，不会上传</span></p>
+        <p class="upload-help"><span id="formatHelp">JPG / PNG / WEBP</span><span id="privacyHelp">仅本地处理</span></p>
+        <button type="button" class="tool-action" id="removePhoto" hidden aria-label="移除图片" title="移除图片"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 10v7m4-7v7"/></svg></button>
       </div>
       <div class="text-controls" id="textControls"><div class="edit"><span aria-hidden="true">✎</span><input id="thought" maxlength="100" value="把今天的不开心撕掉" aria-label="写在纸上的文字" placeholder="写下想撕掉的事……"><button type="button" class="tool-action clear-input" id="clearThought" aria-label="清空文字" title="清空文字" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="m9 9 6 6m0-6-6 6"/></svg></button></div></div>
       <input id="photoInput" type="file" accept="image/*" hidden aria-label="选择本地图片">
-      <button class="tool-action" id="removePhoto" hidden aria-label="移除图片" title="移除图片">移除</button>
+      
       <button class="tool-action" id="newPaper" title="恢复完整纸张，保留当前内容"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10a8 8 0 1 1 1 8M4 4v6h6"/></svg><span id="resetLabel">再来一次</span></button>
       <button class="tool-action" id="audio" aria-label="音效" title="关闭音效" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m11 5-5 4H3v6h3l5 4z"/><path class="sound-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/><path class="sound-muted" d="m16 9 5 6m0-6-5 6"/></svg></button>
       <button class="tool-action" id="haptic" aria-label="震动" title="关闭震动" aria-pressed="true"><svg viewBox="-2 0 28 24" aria-hidden="true"><rect x="8" y="4" width="8" height="16" rx="2"/><path class="haptic-waves" d="M5 8a6 6 0 0 0 0 8M2.5 6a9 9 0 0 0 0 12M19 8a6 6 0 0 1 0 8m2.5-10a9 9 0 0 1 0 12"/><path class="haptic-muted" d="m4 4 16 16"/></svg></button>
@@ -141,8 +142,8 @@ function applyLanguage(nextLanguage){
  $('tools').setAttribute('aria-label',t('toolsLabel'));
  input.setAttribute('aria-label',t('thoughtLabel'));input.placeholder=t('thoughtPlaceholder');
  $('clearThought').setAttribute('aria-label',t('clearThought'));$('clearThought').title=t('clearThought');
- $('uploadLabel').textContent=t('uploadTitle');$('imageModeLabel').textContent=t('upload');$('textModeLabel').textContent=language==='zh'?'文字':'Text';$('formatHelp').textContent=language==='zh'?'支持 JPG / PNG / WEBP':'JPG / PNG / WEBP';$('privacyHelp').textContent=language==='zh'?'图片仅在本地处理，不会上传':'Processed on your device. Never uploaded.';$('uploadPhoto').title=t('uploadTitle');$('photoInput').setAttribute('aria-label',t('photoInput'));
- $('removePhoto').textContent=t('remove');$('removePhoto').setAttribute('aria-label',t('removeTitle'));$('removePhoto').title=t('removeTitle');
+ $('uploadLabel').textContent=t('uploadTitle');$('imageModeLabel').textContent=t('upload');$('textModeLabel').textContent=language==='zh'?'文字':'Text';$('formatHelp').textContent=language==='zh'?'JPG / PNG / WEBP':'JPG / PNG / WEBP';$('privacyHelp').textContent=language==='zh'?'仅本地处理':'On-device only.';$('uploadPhoto').title=t('uploadTitle');$('photoInput').setAttribute('aria-label',t('photoInput'));
+ $('removePhoto').setAttribute('aria-label',t('removeTitle'));$('removePhoto').title=t('removeTitle');
  $('resetLabel').textContent=t('reset');$('newPaper').title=t('resetTitle');
  $('audio').setAttribute('aria-label',t('sound'));$('audio').title=soundEnabled?t('soundOnTitle'):t('soundOffTitle');
  $('haptic').setAttribute('aria-label',t('vibration'));$('haptic').title=vibrationEnabled?t('vibrationOnTitle'):t('vibrationOffTitle');
