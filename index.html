@@ -304,6 +304,11 @@ function vibrateTear(length,cutCount){
  const duration=clamp(Math.round(9+length*.018+cutCount*1.5),10,24);
  try{navigator.vibrate(duration)}catch(e){}
 }
+function vibrateCelebration(){
+ if(!vibrationEnabled||!('vibrate' in navigator))return;
+ lastVibration=Date.now();
+ try{navigator.vibrate([28,45,42,45,65])}catch(e){}
+}
 function tearAlong(a,b){
  let next=[],cutCount=0;
  const minX=Math.min(a.x,b.x),maxX=Math.max(a.x,b.x),minY=Math.min(a.y,b.y),maxY=Math.max(a.y,b.y);
@@ -329,6 +334,7 @@ function tearAlong(a,b){
 }
 function celebrate(isCompletion=true){
  if(isCompletion)celebrated=true;
+ if(isCompletion)vibrateCelebration();
  confetti=[];
  const colors=['#d66f60','#e9a554','#f1cc72','#8ba99a','#a482bf','#fff7e5'];
  const originX=W/2,originY=H/2;
