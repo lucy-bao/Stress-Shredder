@@ -44,7 +44,8 @@
 .clear-input{flex:0 0 44px;padding:0;color:#aa9787}
 #uploadPhoto{padding-left:0;color:#a45b47}
 #newPaper{margin-left:auto}
-#audio,#haptic{width:40px;padding:0}
+#audio,#haptic{width:40px;flex:0 0 40px;padding:0}
+#haptic svg{width:20px;overflow:visible}
 #audio .sound-muted,#haptic .haptic-muted{display:none}
 #audio[aria-pressed="false"] .sound-waves,#haptic[aria-pressed="false"] .haptic-waves{display:none}
 #audio[aria-pressed="false"] .sound-muted,#haptic[aria-pressed="false"] .haptic-muted{display:block}
@@ -68,7 +69,7 @@
       <button class="tool-action" id="removePhoto" hidden aria-label="移除图片" title="移除图片">移除</button>
       <button class="tool-action" id="newPaper" title="恢复完整纸张，保留当前内容"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10a8 8 0 1 1 1 8M4 4v6h6"/></svg><span id="resetLabel">再来一次</span></button>
       <button class="tool-action" id="audio" aria-label="音效" title="关闭音效" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m11 5-5 4H3v6h3l5 4z"/><path class="sound-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/><path class="sound-muted" d="m16 9 5 6m0-6-5 6"/></svg></button>
-      <button class="tool-action" id="haptic" aria-label="震动" title="关闭震动" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="4" width="8" height="16" rx="2"/><path class="haptic-waves" d="M5 8a6 6 0 0 0 0 8M2.5 6a9 9 0 0 0 0 12M19 8a6 6 0 0 1 0 8m2.5-10a9 9 0 0 1 0 12"/><path class="haptic-muted" d="m4 4 16 16"/></svg></button>
+      <button class="tool-action" id="haptic" aria-label="震动" title="关闭震动" aria-pressed="true"><svg viewBox="-2 0 28 24" aria-hidden="true"><rect x="8" y="4" width="8" height="16" rx="2"/><path class="haptic-waves" d="M5 8a6 6 0 0 0 0 8M2.5 6a9 9 0 0 0 0 12M19 8a6 6 0 0 1 0 8m2.5-10a9 9 0 0 1 0 12"/><path class="haptic-muted" d="m4 4 16 16"/></svg></button>
     </div>
   </section>
   <div class="photo-info" id="photoInfo" aria-live="polite"></div>
@@ -81,7 +82,7 @@
 const $=id=>document.getElementById(id);
 const canvas=$('paperCanvas'),ctx=canvas.getContext('2d'),desk=$('desk');
 const countEl=$('pieceCount'),tearEl=$('tearCount');
-let W=0,H=0,ratio=1,scene=null,pieces=[],dust=[],effects=[],confetti=[],gesture=null,tears=0,soundEnabled=true,vibrationEnabled=true,audioCtx=null,audioResume=null,pendingTear=null,lastSound=0,lastVibration=0;
+let W=0,H=0,ratio=1,scene=null,pieces=[],dust=[],effects=[],confetti=[],gesture=null,tears=0,soundEnabled=true,vibrationEnabled=true,audioCtx=null,audioResume=null,pendingTear=null,lastSound=0,lastVibration=0,audioPrimed=false,vibrationPrimed=false;
 let uploadedImage=null,uploadedName="",uploadSequence=0;
 let paperTexture=null,textureVersion=0,textureDirty=true,needsRedraw=true;
 let tearBuffers=[],audioLimiter=null;
@@ -248,6 +249,20 @@ function prepareAudio(retry=false){
    }).catch(()=>{if(audioResume===resume){audioResume=null;pendingTear=null}});
   }
  }catch(e){}
+}
+function primeFeedback(){
+ prepareAudio(true);
+ if(soundEnabled&&audioCtx&&!audioPrimed){
+  try{
+   const source=audioCtx.createBufferSource(),gain=audioCtx.createGain();
+   source.buffer=audioCtx.createBuffer(1,1,audioCtx.sampleRate);gain.gain.value=0;
+   source.connect(gain).connect(audioCtx.destination);source.onended=()=>{source.disconnect();gain.disconnect()};source.start();audioPrimed=true;
+  }catch(e){}
+ }
+ if(vibrationEnabled&&!vibrationPrimed&&'vibrate' in navigator){
+  vibrationPrimed=true;
+  try{navigator.vibrate(1)}catch(e){}
+ }
 }
 function playTear(length){
  if(!soundEnabled)return;
@@ -421,7 +436,7 @@ for(const e of effects){ctx.strokeStyle=`rgba(255,255,255,${e.life*.8})`;ctx.lin
 for(const particle of confetti){ctx.save();ctx.translate(particle.x,particle.y);ctx.rotate(particle.rotation);ctx.globalAlpha=Math.min(1,particle.life/35);ctx.fillStyle=particle.color;ctx.fillRect(-particle.width/2,-particle.height/2,particle.width,particle.height);ctx.restore()}
 if(gesture){const pts=gesture.points;if(pts.length>1){ctx.strokeStyle='#ad5f4fb8';ctx.lineWidth=2.5;ctx.setLineDash([5,5]);ctx.lineCap='round';ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i].x,pts[i].y);ctx.stroke();ctx.setLineDash([])}}requestAnimationFrame(draw)}
 function eventPoint(e){const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
-canvas.addEventListener('pointerdown',e=>{if(e.button!==0)return;e.preventDefault();prepareAudio(true);const p=eventPoint(e);gesture={id:e.pointerId,start:p,anchor:p,points:[p],hasCut:false};try{canvas.setPointerCapture(e.pointerId)}catch(_){}});
+canvas.addEventListener('pointerdown',e=>{if(e.button!==0)return;e.preventDefault();primeFeedback();const p=eventPoint(e);gesture={id:e.pointerId,start:p,anchor:p,points:[p],hasCut:false};try{canvas.setPointerCapture(e.pointerId)}catch(_){}});
 canvas.addEventListener('pointermove',e=>{if(!gesture||gesture.id!==e.pointerId)return;e.preventDefault();const p=eventPoint(e),g=gesture;g.points.push(p);if(g.points.length>15)g.points.shift();const travel=dist(g.anchor,p);if(travel>18){const cut=tearAlong(g.anchor,p);if(cut){g.anchor=p;g.hasCut=true;g.points=[p]}else if(travel>145)g.anchor=g.points[Math.floor(g.points.length/3)]||p}});
 function finish(e){if(!gesture||gesture.id!==e.pointerId)return;const p=eventPoint(e),g=gesture;if(!g.hasCut&&dist(g.start,p)>16)tearAlong(g.start,p);gesture=null;needsRedraw=true}
 canvas.addEventListener('pointerup',finish);canvas.addEventListener('pointercancel',()=>{gesture=null;needsRedraw=true});canvas.addEventListener('lostpointercapture',()=>{gesture=null;needsRedraw=true});
@@ -443,7 +458,7 @@ $('clearThought').addEventListener('click',()=>{$('thought').value='';syncThough
 $('languageToggle').addEventListener('click',()=>applyLanguage(language==='zh'?'en':'zh'));
 applyLanguage(preferredLanguage);
 $('thought').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();e.target.blur()}});$('audio').addEventListener('click',()=>{soundEnabled=!soundEnabled;if(soundEnabled)prepareAudio(true);else pendingTear=null;$('audio').title=soundEnabled?t('soundOnTitle'):t('soundOffTitle');$('audio').setAttribute('aria-pressed',String(soundEnabled))});
-$('haptic').addEventListener('click',()=>{vibrationEnabled=!vibrationEnabled;if(!vibrationEnabled&&'vibrate' in navigator)try{navigator.vibrate(0)}catch(e){}$('haptic').title=vibrationEnabled?t('vibrationOnTitle'):t('vibrationOffTitle');$('haptic').setAttribute('aria-pressed',String(vibrationEnabled))});
+$('haptic').addEventListener('click',()=>{vibrationEnabled=!vibrationEnabled;if(vibrationEnabled){vibrationPrimed=false}else if('vibrate' in navigator)try{navigator.vibrate(0)}catch(e){}$('haptic').title=vibrationEnabled?t('vibrationOnTitle'):t('vibrationOffTitle');$('haptic').setAttribute('aria-pressed',String(vibrationEnabled))});
 document.addEventListener('keydown',event=>{
  if(event.code!=='KeyK'||!event.shiftKey||event.ctrlKey||event.altKey||event.metaKey||event.repeat)return;
  if(event.target instanceof Element&&event.target.closest('input,textarea,select,[contenteditable]'))return;
