@@ -1,16 +1,7 @@
 # 撕了算了
 
-使用原生 HTML、CSS、JavaScript 的手机和电脑端自由撕纸工具。页面采用 `dist/index.html` 单文件版本，来自用户提供的 `free-tear-paper (3).html`。
+使用原生 HTML、CSS、JavaScript 的手机和电脑端自由撕纸工具
 
-## 本地运行
-
-需要 Node.js 18 或更新版本：
-
-```sh
-npm run dev
-```
-
-访问 http://localhost:5173 。手机和电脑连接同一 Wi-Fi 后，可通过 `http://电脑局域网IP:5173` 访问。服务绑定所有网卡，勿直接暴露于公网。也可以直接打开 `dist/index.html`。
 
 ## 使用
 
