@@ -44,10 +44,10 @@
 .clear-input{flex:0 0 44px;padding:0;color:#aa9787}
 #uploadPhoto{padding-left:0;color:#a45b47}
 #newPaper{margin-left:auto}
-#audio{width:40px;padding:0}
-#audio .sound-muted{display:none}
-#audio[aria-pressed="false"] .sound-waves{display:none}
-#audio[aria-pressed="false"] .sound-muted{display:block}
+#audio,#haptic{width:40px;padding:0}
+#audio .sound-muted,#haptic .haptic-muted{display:none}
+#audio[aria-pressed="false"] .sound-waves,#haptic[aria-pressed="false"] .haptic-waves{display:none}
+#audio[aria-pressed="false"] .sound-muted,#haptic[aria-pressed="false"] .haptic-muted{display:block}
 .count{display:flex;align-items:baseline;gap:7px;flex:none;max-width:none;padding:0;background:none;border:0;border-radius:0;font-size:11px}
 .count strong{font-size:14px;margin:0;color:#796554}
 .stats{justify-content:center;gap:24px}
@@ -68,6 +68,7 @@
       <button class="tool-action" id="removePhoto" hidden aria-label="移除图片" title="移除图片">移除</button>
       <button class="tool-action" id="newPaper" title="恢复完整纸张，保留当前内容"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10a8 8 0 1 1 1 8M4 4v6h6"/></svg><span id="resetLabel">再来一次</span></button>
       <button class="tool-action" id="audio" aria-label="音效" title="关闭音效" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m11 5-5 4H3v6h3l5 4z"/><path class="sound-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/><path class="sound-muted" d="m16 9 5 6m0-6-5 6"/></svg></button>
+      <button class="tool-action" id="haptic" aria-label="震动" title="关闭震动" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="4" width="8" height="16" rx="2"/><path class="haptic-waves" d="M5 8a6 6 0 0 0 0 8M2.5 6a9 9 0 0 0 0 12M19 8a6 6 0 0 1 0 8m2.5-10a9 9 0 0 1 0 12"/><path class="haptic-muted" d="m4 4 16 16"/></svg></button>
     </div>
   </section>
   <div class="photo-info" id="photoInfo" aria-live="polite"></div>
@@ -80,7 +81,7 @@
 const $=id=>document.getElementById(id);
 const canvas=$('paperCanvas'),ctx=canvas.getContext('2d'),desk=$('desk');
 const countEl=$('pieceCount'),tearEl=$('tearCount');
-let W=0,H=0,ratio=1,scene=null,pieces=[],dust=[],effects=[],confetti=[],gesture=null,tears=0,soundEnabled=true,audioCtx=null,audioResume=null,pendingTear=null,lastSound=0;
+let W=0,H=0,ratio=1,scene=null,pieces=[],dust=[],effects=[],confetti=[],gesture=null,tears=0,soundEnabled=true,vibrationEnabled=true,audioCtx=null,audioResume=null,pendingTear=null,lastSound=0,lastVibration=0;
 let uploadedImage=null,uploadedName="",uploadSequence=0;
 let paperTexture=null,textureVersion=0,textureDirty=true,needsRedraw=true;
 let tearBuffers=[],audioLimiter=null;
@@ -88,8 +89,8 @@ let celebrated=false;
 let language='zh',preferredLanguage='zh',photoInfoKey='';
 try{const savedLanguage=localStorage.getItem('tear-paper-language');if(savedLanguage==='en')preferredLanguage='en'}catch(e){}
 const translations={
- zh:{pageTitle:'开撕 · 尽情撕掉你的不开心',heading:'开撕',subtitle:'写下你的不开心或者上传图片，尽情撕掉你的不开心。',localOnly:'数据仅在本地处理。',toolsLabel:'工具栏',defaultThought:'把今天的不开心撕掉',thoughtLabel:'写在纸上的文字',thoughtPlaceholder:'写下想撕掉的事……',clearThought:'清空文字',upload:'图片',uploadTitle:'上传图片',photoInput:'选择本地图片',remove:'移除',removeTitle:'移除图片',reset:'再来一次',resetTitle:'恢复完整纸张，保留当前内容',sound:'音效',soundOnTitle:'关闭音效',soundOffTitle:'开启音效',deskLabel:'可交互撕纸画布',celebration:'恭喜消灭了所有不开心',statsLabel:'撕纸统计',pieces:'纸片',tears:'撕裂',paperTop:'想放下的事',paperPrompt:'鼠标或手指划过纸张，撕开它',switchLanguage:'Switch to English',switchLabel:'EN',invalidImage:'请上传 JPG、PNG、WebP 等普通图片。',tooLarge:'图片超过 25 MB，请换一张小一点的图片。',readFailed:'图片读取失败，请换一张试试。',unsupported:'图片太大或格式不支持，读取失败，请换一张图片。',openFailed:'图片无法打开，请换成 JPG、PNG 或 WebP 格式。'},
- en:{pageTitle:'Tear It Up · Let go of what is bothering you',heading:'Tear It Up',subtitle:'Write down what is bothering you or upload an image, then tear it away.',localOnly:'Your data stays on this device.',toolsLabel:'Tools',defaultThought:"Tear away today's worries",thoughtLabel:'Text on the paper',thoughtPlaceholder:'Write down what you want to let go…',clearThought:'Clear text',upload:'Image',uploadTitle:'Upload image',photoInput:'Choose a local image',remove:'Remove',removeTitle:'Remove image',reset:'Start over',resetTitle:'Restore the paper and keep the current content',sound:'Sound',soundOnTitle:'Turn sound off',soundOffTitle:'Turn sound on',deskLabel:'Interactive tearing canvas',celebration:'You cleared away every worry!',statsLabel:'Tearing stats',pieces:'Pieces',tears:'Tears',paperTop:'THE THINGS I LET GO',paperPrompt:'Swipe across the paper to tear it',switchLanguage:'切换到中文',switchLabel:'中',invalidImage:'Please upload a JPG, PNG, WebP, or similar image.',tooLarge:'This image is over 25 MB. Please choose a smaller one.',readFailed:'The image could not be read. Please try another.',unsupported:'This image is too large or unsupported. Please try another.',openFailed:'Could not open the image. Please use JPG, PNG, or WebP.'}
+ zh:{pageTitle:'开撕 · 尽情撕掉你的不开心',heading:'开撕',subtitle:'写下你的不开心或者上传图片，尽情撕掉你的不开心。',localOnly:'数据仅在本地处理。',toolsLabel:'工具栏',defaultThought:'把今天的不开心撕掉',thoughtLabel:'写在纸上的文字',thoughtPlaceholder:'写下想撕掉的事……',clearThought:'清空文字',upload:'图片',uploadTitle:'上传图片',photoInput:'选择本地图片',remove:'移除',removeTitle:'移除图片',reset:'再来一次',resetTitle:'恢复完整纸张，保留当前内容',sound:'音效',soundOnTitle:'关闭音效',soundOffTitle:'开启音效',vibration:'震动',vibrationOnTitle:'关闭震动',vibrationOffTitle:'开启震动',deskLabel:'可交互撕纸画布',celebration:'恭喜消灭了所有不开心',statsLabel:'撕纸统计',pieces:'纸片',tears:'撕裂',paperTop:'想放下的事',paperPrompt:'鼠标或手指划过纸张，撕开它',switchLanguage:'Switch to English',switchLabel:'EN',invalidImage:'请上传 JPG、PNG、WebP 等普通图片。',tooLarge:'图片超过 25 MB，请换一张小一点的图片。',readFailed:'图片读取失败，请换一张试试。',unsupported:'图片太大或格式不支持，读取失败，请换一张图片。',openFailed:'图片无法打开，请换成 JPG、PNG 或 WebP 格式。'},
+ en:{pageTitle:'Tear It Up · Let go of what is bothering you',heading:'Tear It Up',subtitle:'Write down what is bothering you or upload an image, then tear it away.',localOnly:'Your data stays on this device.',toolsLabel:'Tools',defaultThought:"Tear away today's worries",thoughtLabel:'Text on the paper',thoughtPlaceholder:'Write down what you want to let go…',clearThought:'Clear text',upload:'Image',uploadTitle:'Upload image',photoInput:'Choose a local image',remove:'Remove',removeTitle:'Remove image',reset:'Start over',resetTitle:'Restore the paper and keep the current content',sound:'Sound',soundOnTitle:'Turn sound off',soundOffTitle:'Turn sound on',vibration:'Haptics',vibrationOnTitle:'Turn haptics off',vibrationOffTitle:'Turn haptics on',deskLabel:'Interactive tearing canvas',celebration:'You cleared away every worry!',statsLabel:'Tearing stats',pieces:'Pieces',tears:'Tears',paperTop:'THE THINGS I LET GO',paperPrompt:'Swipe across the paper to tear it',switchLanguage:'切换到中文',switchLabel:'中',invalidImage:'Please upload a JPG, PNG, WebP, or similar image.',tooLarge:'This image is over 25 MB. Please choose a smaller one.',readFailed:'The image could not be read. Please try another.',unsupported:'This image is too large or unsupported. Please try another.',openFailed:'Could not open the image. Please use JPG, PNG, or WebP.'}
 };
 const t=key=>translations[language][key];
 function applyLanguage(nextLanguage){
@@ -105,6 +106,7 @@ function applyLanguage(nextLanguage){
  $('removePhoto').textContent=t('remove');$('removePhoto').setAttribute('aria-label',t('removeTitle'));$('removePhoto').title=t('removeTitle');
  $('resetLabel').textContent=t('reset');$('newPaper').title=t('resetTitle');
  $('audio').setAttribute('aria-label',t('sound'));$('audio').title=soundEnabled?t('soundOnTitle'):t('soundOffTitle');
+ $('haptic').setAttribute('aria-label',t('vibration'));$('haptic').title=vibrationEnabled?t('vibrationOnTitle'):t('vibrationOffTitle');
  desk.setAttribute('aria-label',t('deskLabel'));$('celebrationMessage').textContent=t('celebration');
  $('stats').setAttribute('aria-label',t('statsLabel'));$('piecesLabel').textContent=t('pieces');$('tearsLabel').textContent=t('tears');
  const toggle=$('languageToggle');toggle.textContent=t('switchLabel');toggle.setAttribute('aria-label',t('switchLanguage'));toggle.title=t('switchLanguage');
@@ -281,6 +283,12 @@ function playTear(length){
   source.start(start,rnd(0,.16-duration));source.stop(start+duration);
  }catch(e){}
 }
+function vibrateTear(length,cutCount){
+ if(!vibrationEnabled||!('vibrate' in navigator)||Date.now()-lastVibration<45)return;
+ lastVibration=Date.now();
+ const duration=clamp(Math.round(9+length*.018+cutCount*1.5),10,24);
+ try{navigator.vibrate(duration)}catch(e){}
+}
 function tearAlong(a,b){
  let next=[],cutCount=0;
  const minX=Math.min(a.x,b.x),maxX=Math.max(a.x,b.x),minY=Math.min(a.y,b.y),maxY=Math.max(a.y,b.y);
@@ -298,7 +306,8 @@ function tearAlong(a,b){
   next.push(fragment);
  }
  if(!cutCount)return false;
- pieces=next;tears+=cutCount;playTear(dist(a,b));scratch(a,b);
+ const tearLength=dist(a,b);
+ pieces=next;tears+=cutCount;playTear(tearLength);vibrateTear(tearLength,cutCount);scratch(a,b);
  if(pieces.length>450){pieces.sort((first,second)=>second.area-first.area);pieces=pieces.slice(0,450)}
  updateStats();
  return true;
@@ -359,6 +368,25 @@ function loadPhoto(file){
  img.src=url;
 }
 
+function keepInsideMobileSafeArea(fragment){
+ const inset=8,co=Math.cos(fragment.rot),si=Math.sin(fragment.rot),bounds=fragment.bounds;
+ const halfWidth=(bounds.maxX-bounds.minX)/2,halfHeight=(bounds.maxY-bounds.minY)/2;
+ const localCenterX=(bounds.minX+bounds.maxX)/2-fragment.c.x,localCenterY=(bounds.minY+bounds.maxY)/2-fragment.c.y;
+ const boxCenterX=fragment.c.x+fragment.tx+localCenterX*co-localCenterY*si;
+ const boxCenterY=fragment.c.y+fragment.ty+localCenterX*si+localCenterY*co;
+ const extentX=Math.abs(co)*halfWidth+Math.abs(si)*halfHeight;
+ const extentY=Math.abs(si)*halfWidth+Math.abs(co)*halfHeight;
+ const availableWidth=W-inset*2,availableHeight=H-inset*2;
+ let shiftX=0,shiftY=0;
+ if(extentX*2>availableWidth)shiftX=W/2-boxCenterX;
+ else if(boxCenterX-extentX<inset)shiftX=inset-(boxCenterX-extentX);
+ else if(boxCenterX+extentX>W-inset)shiftX=W-inset-(boxCenterX+extentX);
+ if(extentY*2>availableHeight)shiftY=H/2-boxCenterY;
+ else if(boxCenterY-extentY<inset)shiftY=inset-(boxCenterY-extentY);
+ else if(boxCenterY+extentY>H-inset)shiftY=H-inset-(boxCenterY+extentY);
+ if(shiftX){fragment.tx+=shiftX;fragment.vx=shiftX>0?Math.abs(fragment.vx)*.45:-Math.abs(fragment.vx)*.45}
+ if(shiftY){fragment.ty+=shiftY;fragment.vy=shiftY>0?Math.abs(fragment.vy)*.45:-Math.abs(fragment.vy)*.45}
+}
 function movePhysics(dt){
  let changed=dust.length>0||effects.length>0||confetti.length>0;
  const drag=Math.pow(.90,dt),spinDrag=Math.pow(.87,dt),dustDrag=Math.pow(.975,dt);
@@ -367,9 +395,12 @@ function movePhysics(dt){
   changed=true;
   fragment.tx+=fragment.vx*dt;fragment.ty+=fragment.vy*dt;fragment.rot+=fragment.vr*dt;
   fragment.vx*=drag;fragment.vy*=drag;fragment.vr*=spinDrag;
-  const centerX=fragment.c.x+fragment.tx,centerY=fragment.c.y+fragment.ty,margin=Math.min(28,Math.sqrt(fragment.area)*.17);
-  if(centerX<margin){fragment.tx+=margin-centerX;fragment.vx=Math.abs(fragment.vx)*.55}else if(centerX>W-margin){fragment.tx+=W-margin-centerX;fragment.vx=-Math.abs(fragment.vx)*.55}
-  if(centerY<margin){fragment.ty+=margin-centerY;fragment.vy=Math.abs(fragment.vy)*.55}else if(centerY>H-margin){fragment.ty+=H-margin-centerY;fragment.vy=-Math.abs(fragment.vy)*.55}
+  if(W<600)keepInsideMobileSafeArea(fragment);
+  else{
+   const centerX=fragment.c.x+fragment.tx,centerY=fragment.c.y+fragment.ty,margin=Math.min(28,Math.sqrt(fragment.area)*.17);
+   if(centerX<margin){fragment.tx+=margin-centerX;fragment.vx=Math.abs(fragment.vx)*.55}else if(centerX>W-margin){fragment.tx+=W-margin-centerX;fragment.vx=-Math.abs(fragment.vx)*.55}
+   if(centerY<margin){fragment.ty+=margin-centerY;fragment.vy=Math.abs(fragment.vy)*.55}else if(centerY>H-margin){fragment.ty+=H-margin-centerY;fragment.vy=-Math.abs(fragment.vy)*.55}
+  }
   if(Math.abs(fragment.vx)+Math.abs(fragment.vy)<.015&&Math.abs(fragment.vr)<.0001){fragment.vx=0;fragment.vy=0;fragment.vr=0;fragment.sleeping=true}
  }
  for(const particle of dust){particle.x+=particle.vx*dt;particle.y+=particle.vy*dt;particle.vx*=dustDrag;particle.vy*=dustDrag;particle.rot+=particle.vr*dt;particle.life-=dt*.35}
@@ -412,6 +443,7 @@ $('clearThought').addEventListener('click',()=>{$('thought').value='';syncThough
 $('languageToggle').addEventListener('click',()=>applyLanguage(language==='zh'?'en':'zh'));
 applyLanguage(preferredLanguage);
 $('thought').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();e.target.blur()}});$('audio').addEventListener('click',()=>{soundEnabled=!soundEnabled;if(soundEnabled)prepareAudio(true);else pendingTear=null;$('audio').title=soundEnabled?t('soundOnTitle'):t('soundOffTitle');$('audio').setAttribute('aria-pressed',String(soundEnabled))});
+$('haptic').addEventListener('click',()=>{vibrationEnabled=!vibrationEnabled;if(!vibrationEnabled&&'vibrate' in navigator)try{navigator.vibrate(0)}catch(e){}$('haptic').title=vibrationEnabled?t('vibrationOnTitle'):t('vibrationOffTitle');$('haptic').setAttribute('aria-pressed',String(vibrationEnabled))});
 document.addEventListener('keydown',event=>{
  if(event.code!=='KeyK'||!event.shiftKey||event.ctrlKey||event.altKey||event.metaKey||event.repeat)return;
  if(event.target instanceof Element&&event.target.closest('input,textarea,select,[contenteditable]'))return;
