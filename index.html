@@ -505,7 +505,25 @@ function setContentMode(mode){
 }
 $('imageMode').addEventListener('click',()=>setContentMode('image'));
 $('textMode').addEventListener('click',()=>{setContentMode('text');$('thought').focus()});
-$('newPaper').addEventListener('click',reset);
+const restartButton=$('newPaper');
+let restartTouch=null,lastTouchRestart=-Infinity;
+restartButton.style.touchAction='manipulation';
+restartButton.addEventListener('pointerdown',event=>{
+ if(event.pointerType!=='touch'||!event.isPrimary)return;
+ restartTouch={id:event.pointerId,x:event.clientX,y:event.clientY};
+});
+restartButton.addEventListener('pointercancel',()=>{restartTouch=null});
+restartButton.addEventListener('pointerup',event=>{
+ const touch=restartTouch;restartTouch=null;
+ if(!touch||touch.id!==event.pointerId||Math.hypot(event.clientX-touch.x,event.clientY-touch.y)>12)return;
+ event.preventDefault();
+ lastTouchRestart=performance.now();
+ reset();
+});
+restartButton.addEventListener('click',event=>{
+ if(event.detail!==0&&performance.now()-lastTouchRestart<700){event.preventDefault();return}
+ reset();
+});
 $('uploadPhoto').addEventListener('click',()=>$('photoInput').click());
 $('photoInput').addEventListener('change',e=>{loadPhoto(e.target.files&&e.target.files[0]);e.target.value=''});
 $('removePhoto').addEventListener('click',()=>{++uploadSequence;uploadedImage=null;uploadedName='';$('removePhoto').hidden=true;showImageInfo('');reset()});
