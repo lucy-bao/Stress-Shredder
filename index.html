@@ -85,6 +85,16 @@
 .mode-switch .mode-button[aria-pressed="false"]:hover{background:#e8dfd2;color:#695749}
 @media(max-width:600px){.mode-switch{flex:0 0 auto}.mode-switch .mode-button{min-height:32px;height:32px;padding:0 11px;font-size:12px}}
 @media(max-width:600px){#imageControls{flex-basis:100%;min-width:0;gap:10px;flex-wrap:nowrap}#uploadPhoto{padding:0 12px;gap:6px}.upload-help{flex:1;min-width:0;font-size:10px;gap:3px;white-space:nowrap}#removePhoto{flex:0 0 36px;width:36px;min-height:44px;padding:0;margin:0}#removePhoto svg{width:19px;height:19px}}
+/* Match upload height to the selector's outer pill. */
+#uploadPhoto{height:42px;min-height:42px;border-radius:999px}
+@media(max-width:600px){#uploadPhoto{height:40px;min-height:40px}}
+/* Slide the shared selection pill between the two modes. */
+.mode-switch{position:relative;isolation:isolate;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.mode-switch::before{content:"";position:absolute;z-index:-1;top:4px;bottom:4px;left:4px;width:calc((100% - 11px)/2);border-radius:999px;background:#fffcf8;box-shadow:0 1px 4px #66503a18;transform:translateX(0);transition:transform .26s cubic-bezier(.22,.68,.25,1)}
+.mode-switch:has(#imageMode[aria-pressed="true"])::before{transform:translateX(calc(100% + 3px))}
+.mode-switch .mode-button{background:transparent;transition:color .22s ease}
+.mode-switch .mode-button[aria-pressed="true"],.mode-switch .mode-button[aria-pressed="false"]:hover{background:transparent;box-shadow:none}
+@media(prefers-reduced-motion:reduce){.mode-switch::before,.mode-switch .mode-button{transition:none}}
 </style>
 </head>
 <body>
